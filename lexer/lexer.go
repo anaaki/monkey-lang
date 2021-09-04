@@ -52,9 +52,10 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.EOF
 
 	default:
-		if isLitter(l.ch) {
+		if isLitter(l.ch) { //英数字かどうかを確認して、Tokenになるか判定
 			tok.Literal = l.readIdentifier()
-			return tok
+			tok.Type = token.LookupIdent(tok.Literal)
+			return tok // readIdentifierでreadChar()を必要分読み切っているため、先にreturn
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
