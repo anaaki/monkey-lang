@@ -53,7 +53,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.EOF
 
 	default:
-		if isLitter(l.ch) { //英数字かどうかを確認して、Tokenになるか判定
+		if isLetter(l.ch) { //英数字かどうかを確認して、Tokenになるか判定
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok // readIdentifierでreadChar()を必要分読み切っているため、先にreturn
@@ -78,12 +78,12 @@ func (l *Lexer) readIdentifier() string {
 	// let a = のlからtまでを読み進める。 tの隣は空白,つまりisLetter==Falseにすることで
 	// 字句の切れ目を検出している
 	position := l.position
-	for isLitter(l.ch) {
+	for isLetter(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
 }
-func isLitter(ch byte) bool {
+func isLetter(ch byte) bool {
 	// この企画では英数字だけを対象にする。アンダースコアは例外的にこの言語で許可した範囲とする
 	// foo_barみたいな変数が作れるようになる。
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
