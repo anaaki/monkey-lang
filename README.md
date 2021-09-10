@@ -75,13 +75,6 @@ positionは現在の文字列、readPositionはこれから読み込む位置(po
 
 Monkeyは再帰下降構文解析（トップダウン演算子優先順位）解析器。Pratt構文解析器
 
-## 構文解析 let
-式<expression>は値を生成し、文<identifire>はしない。
-let <identifire> = <expression>;
-式は例えば”5”。5を生成する。
-let x = 5 は文。何も生成しないから。
-
-
 ## AST疑似コード
 
 ```js
@@ -151,3 +144,14 @@ function parseOperatorExpression() {
     return operatorExpression()
 }
 ```
+
+
+## 構文解析 let
+式<expression>は値を生成し、文<identifire>はしない。
+let <identifire> = <expression>;
+式は例えば”5”。5を生成する。
+let x = 5 は文。何も生成しないから。
+
+## 構文解析 return
+return <expression>;
+return の後に式が来る。
