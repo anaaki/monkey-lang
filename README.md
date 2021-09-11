@@ -155,3 +155,35 @@ let x = 5 は文。何も生成しないから。
 ## 構文解析 return
 return <expression>;
 return の後に式が来る。
+
+## 式
+Monkeyの式は複雑なので、expectPeekなど、現在のトークンに基づいて何かを決めるやり方はできない。
+Vaughan Prattを使うことになる。
+
+>構文解析関数(ここでは parseLetStatementメソッドを思い浮かべてほしい)を (BNFやEBNFで定義される)文法ルールに関連付けるのではなく、Prattはこれらの関数(彼は 「semmantic code」と呼んでいる)を単一のトークンタイプに関連付ける点だ。この方式の肝となるの
+
+は、それぞれのトークンタイプに対して 2 つの構文解析関数を関連付けるところだ。これはトークンの 配置、つまり中置か前置かによる。
+return let以外は全部式として扱うことになる。つまり値を生成する。
+ * 前置演算子 -5, !true
+ * 二項演算子 5 + 5
+ * foo == bar
+
+識別子も式になる
+ * add(foo, bar)
+ * foo * bar / foobar
+
+関数リテラルも四季になる
+let add = func(x, y){return x + y};
+(fn(x) { return x }(5) + 10 ) * 10
+
+if式もある。resultはtrueになる。
+let result = if(10>5){ true} else {false};
+
+
+### 式構文解析の養母
+前置演算子(prefix operator) --5
+後置演算子(postfix operator) foobar++
+中置演算子(infix operator) 5 + 5 演算子が二つのオペランドを持つ。とも言える。
+
+演算子の優先順位(operator precedance, order of operations)
+5 + 5 * 10　みたいに掛け算を先に計算する的なやつ。演算子の次にくるオペランドが演算子にどの程度くっつくかを
