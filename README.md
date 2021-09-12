@@ -192,3 +192,5 @@ let result = if(10>5){ true} else {false};
 
 トークンタイプごとに構文解析関数を関連付ける。
 トークン: 解析関数のマップを作っておく。
+
+構文解析において、statement(文)はletとreturnしかない。他のものが来たらexpression(式)とする
