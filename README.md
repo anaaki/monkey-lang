@@ -180,10 +180,15 @@ if式もある。resultはtrueになる。
 let result = if(10>5){ true} else {false};
 
 
-### 式構文解析の養母
+### 式構文解析の用語
 前置演算子(prefix operator) --5
 後置演算子(postfix operator) foobar++
 中置演算子(infix operator) 5 + 5 演算子が二つのオペランドを持つ。とも言える。
 
 演算子の優先順位(operator precedance, order of operations)
 5 + 5 * 10　みたいに掛け算を先に計算する的なやつ。演算子の次にくるオペランドが演算子にどの程度くっつくかを
+
+## Prattのポイント
+
+トークンタイプごとに構文解析関数を関連付ける。
+トークン: 解析関数のマップを作っておく。
