@@ -194,3 +194,7 @@ let result = if(10>5){ true} else {false};
 トークン: 解析関数のマップを作っておく。
 
 構文解析において、statement(文)はletとreturnしかない。他のものが来たらexpression(式)とする
+foobar;
+
+整数リテラルは式。そのものが値を生成している。
+let x = 5;
