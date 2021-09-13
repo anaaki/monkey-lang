@@ -106,3 +106,12 @@ func (es *ExpressionStatement) String() string {
 	}
 	return ""
 }
+
+type IntegerLiteral struct {
+	Token token.Token
+	Value int64 // プログラム内では"5"のように実際の数字を入れず、int64とする。
+}
+
+func (li *IntegerLiteral) expressionNode()      {}
+func (li *IntegerLiteral) TokenLiteral() string { return li.Token.Literal }
+func (li *IntegerLiteral) String() string       { return li.Token.Literal }
