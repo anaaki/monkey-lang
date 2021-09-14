@@ -115,3 +115,20 @@ type IntegerLiteral struct {
 func (li *IntegerLiteral) expressionNode()      {}
 func (li *IntegerLiteral) TokenLiteral() string { return li.Token.Literal }
 func (li *IntegerLiteral) String() string       { return li.Token.Literal }
+
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression //-5のような表現を可能にする。-5なら-が入る
+}
+
+func (pe *PrefixExpression) expressionNode()      {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+	return out.String()
+}
