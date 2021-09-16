@@ -119,7 +119,7 @@ func (li *IntegerLiteral) String() string       { return li.Token.Literal }
 type PrefixExpression struct {
 	Token    token.Token
 	Operator string
-	Right    Expression //-5のような表現を可能にする。-5なら-が入る
+	Right    Expression //-5のような表現を可能にする。-5なら5が入る
 }
 
 func (pe *PrefixExpression) expressionNode()      {}

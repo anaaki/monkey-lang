@@ -33,6 +33,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier) //まずはテストケースに合わせてIDENTだけ
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
+	p.registerPrefix(token.BANG, p.parsePrefixExpression)
+	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	// 2つトークンを読んで、curToken, peekToken両方セットする。
 	p.nextToken()
 	p.nextToken()
@@ -173,4 +175,16 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	lit.Value = val
 	return lit
 
+}
+
+func (p *Parser) parsePrefixExpression() ast.Expression {
+	expression := &ast.PrefixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+	}
+	//この関数が呼び出されるのは!や-など。前置演算子後にはセットとなるオペランドがあるので、Tokenを前に進める。
+	p.nextToken()
+	expression.Right = p.parseExpression(PREIX)
+	fmt.Println(expression.Right.String())
+	return expression
 }
