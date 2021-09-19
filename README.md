@@ -173,17 +173,17 @@ return let以外は全部式として扱うことになる。つまり値を生�
  * foo * bar / foobar
 
 関数リテラルも四季になる
-let add = func(x, y){return x + y};
-(fn(x) { return x }(5) + 10 ) * 10
+ * let add = func(x, y){return x + y};
+ * (fn(x) { return x }(5) + 10 ) * 10
 
 if式もある。resultはtrueになる。
-let result = if(10>5){ true} else {false};
+ * let result = if(10>5){ true} else {false};
 
 
 ### 式構文解析の用語
-前置演算子(prefix operator) --5
-後置演算子(postfix operator) foobar++
-中置演算子(infix operator) 5 + 5 演算子が二つのオペランドを持つ。とも言える。
+ * 前置演算子(prefix operator) --5
+ * 後置演算子(postfix operator) foobar++
+ * 中置演算子(infix operator) 5 + 5 演算子が二つのオペランドを持つ。とも言える。
 
 演算子の優先順位(operator precedance, order of operations)
 5 + 5 * 10　みたいに掛け算を先に計算する的なやつ。演算子の次にくるオペランドが演算子にどの程度くっつくかを
