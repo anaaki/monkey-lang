@@ -215,6 +215,14 @@ let x = 5;
 優先順位で決める部分を本書では「くっつきやすさ」と表現していた。
 
 ```go
+func (p *Parser) parseExpression(precedance int) ast.Expression {
+	prefix := p.prefixParseFns[p.curToken.Type]
+	if prefix == nil {
+		p.noPrefixParserFnError(p.curToken.Type)
+		return nil
+	}
+	leftExp := prefix()
+
 	for !p.peekTokenIs(token.SEMICOLON) && precedance < p.peekPrecedence() {
 		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
@@ -223,4 +231,50 @@ let x = 5;
 		p.nextToken()
 		leftExp = infix(leftExp)
 	}
+	return leftExp
+}
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+	precedences := p.curPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(precedences)
+	return expression
+}
 ```
+優先順位は自分より高いものが次のトークンとして出現する限り読み出しが続くことになる。
+1 + 2 + 3;
+0. 
+parseSatement > parseExpressionStatement > parseExpressionと進む
+parseExpressionは最初優先順位1(最低)で入る。
+
+1. 
+"1"と"+"はcurTokenとpeekToken。
+"1"はprefixをつけられるIDENTなので、parseIntegerLiteralを通してast.IntegerLiteralとなる。一旦leftExpへ入れる。
+中置演算子の分を解析するループ入り口。curとpeekの優先順は 1("1") < 4("+")なので、InfixExpressionが期待されループ内へ。(leftは1。operatorは+)。トークンを先に進めて、rightにくるトークンをleftExp = infix(leftExp)で読む。infixはparseInfixExpressionが呼び出される。
+leftExp = infix(leftExp)は　既存のleftExp("1")をleftにして、新たにRightを生やしたInfixExpressionを返すのがポイント。
+
+2. 
+parseInfixExpression内部で、新たにInfixExpresionが生成され,leftは"1" operatorは"+"となる。
+leftとoperatorを引数として受け取りつつ、新たにInfixExpresionを生成して、rightとする方式になっている。
+operator"+"の優先順位4を保存しつつ、Tokenを読む。Rightは2が入ることになる。
+Rightを決めるべく呼び出されたp.parseExpression内では curToken"2"なので4("2") < 4("+")　でループは回らない。
+結果2がRightとなって、1.のInfixExpressionが完成(Leftは1、Operatorは+、Rightは2)。1のparseExpresionはreturn。
+図2-6
+leftExp = infix(leftExp)でleftExpに完全なInfixExpresionが入って、ループ最終行
+
+3. 
+ループ先頭に戻る。
+curTokenは"2"のまま1の続き。peekTokenは+なので、1("2") < 4("+") 
+leftExp にはInfixExpression(1 + 2)が入っている。このままinfix(leftExp)でRightをparseInfixExpressionで読む。
+parseInfixExpressionにて、LeftにInfixExpression(1 + 2),Operatorを+,rightに3を入れる。
+parseInfixExpressionはreturn。leftExpに(1 + 2) + 3が出来上がる。
+
+4. 
+ループは
+セミコロンなので終わり
+
+
