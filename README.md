@@ -247,6 +247,7 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 ```
 優先順位は自分より高いものが次のトークンとして出現する限り読み出しが続くことになる。
 1 + 2 + 3;
+
 0. 
 parseSatement > parseExpressionStatement > parseExpressionと進む
 parseExpressionは最初優先順位1(最低)で入る。
@@ -265,6 +266,25 @@ Rightを決めるべく呼び出されたp.parseExpression内では curToken"2"�
 結果2がRightとなって、1.のInfixExpressionが完成(Leftは1、Operatorは+、Rightは2)。1のparseExpresionはreturn。
 図2-6
 leftExp = infix(leftExp)でleftExpに完全なInfixExpresionが入って、ループ最終行
+
+```go
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	// この関数で新たにInfixExpressionを生成し、引数で受け取ったExpressionは左に格納する。
+	expression := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+	// 1 + 2 + 3が(1 + 2) + 3 と左からくっつくように左の優先順位("-")を右のトークンを読み進める時に使えるよう保存しておく。
+	// この時点でcurTokenは1つめの"+"
+	precedences := p.curPrecedence()
+
+	p.nextToken()
+	// この時点でcurTokenは2、だがprecedensesは4としてRightを読む
+	expression.Right = p.parseExpression(precedences)
+	return expression
+}
+```
 
 3. 
 ループ先頭に戻る。
