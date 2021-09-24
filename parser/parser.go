@@ -277,6 +277,16 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		return nil // condition後の consequenceの始まりを確認
 	}
 	expression.Consequence = p.parseBlockStatement()
+	if p.peekTokenIs(token.ELSE) {
+		// elseは省略することもできるような書き方になっている。
+		p.nextToken()
+		if !p.expectPeek(token.LBRACE) {
+			// elseの後、{になっていなければこう構文がおかしい
+			return nil
+		}
+
+		expression.Alternative = p.parseBlockStatement()
+	}
 	return expression
 }
 
