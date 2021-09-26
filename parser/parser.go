@@ -39,6 +39,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.LPAREN, p.parseGroupExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.FUNCTION, p.parseFunctionLiteral)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
@@ -304,4 +305,42 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 		p.nextToken()
 	}
 	return block
+}
+
+func (p *Parser) parseFunctionLiteral() ast.Expression {
+	lit := &ast.FunctionLitetal{Token: p.curToken}
+	if !p.expectPeek(token.LPAREN) {
+		// fnc(){}のfncに居る。次は(になるはず。無ければ構文エラー
+		return nil
+	}
+	lit.Parameters = p.parseFunctionParameters()
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+	lit.Body = p.parseBlockStatement()
+	return lit
+}
+
+func (p *Parser) parseFunctionParameters() []*ast.Identifier {
+	// この時点で、func()の(にいる。
+	identifires := []*ast.Identifier{}
+	if p.peekTokenIs(token.RPAREN) {
+		// 引数なしで抜ける
+		p.nextToken()
+		return identifires
+	}
+	p.nextToken()
+	ident := &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	identifires = append(identifires, ident)
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+		ident := &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+		identifires = append(identifires, ident)
+	}
+	if !p.expectPeek(token.RPAREN) {
+		// func(a,b)のb位置にいて、右カッコがなかったら、構文エラー
+		return nil
+	}
+	return identifires
 }
