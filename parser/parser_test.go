@@ -505,6 +505,10 @@ func TestIfElseExpression(t *testing.T) {
 	if !testIdentifier(t, consequence.Expression, "x") {
 		return
 	}
+	if len(exp.Alternative.Statements) != 1 {
+		t.Errorf("exp.Altenative.Statements dose not contain 1 statement. got=%d\n",
+			len(exp.Alternative.Statements))
+	}
 	altenative, ok := exp.Alternative.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("Statements[0] is not ast.ExpressionStatement. got=%T", exp.Alternative.Statements[0])
