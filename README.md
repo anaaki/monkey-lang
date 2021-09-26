@@ -298,3 +298,22 @@ parseInfixExpressionはreturn。leftExpに(1 + 2) + 3が出来上がる。
 セミコロンなので終わり
 
 
+## 関数リテラル
+
+```fn (<parameters>)<block statement>```
+```<parameters>```は```(<params>, <params>, ....)```で空になることもある。
+
+fn() {return foobar + barfoo;}
+let myFunction = fn(x, y) { return x + y; }
+
+returnでさらに関数を呼び出すこともできる。
+
+```
+fn() {
+	return fn(x, y) {
+		return x > y;
+	};
+}
+```
+パラメーターの1つとして、関数リテラルも使える。
+```myFunc(x, y, fn(x, y) { return x > y; });```
