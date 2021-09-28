@@ -317,3 +317,16 @@ fn() {
 ```
 パラメーターの1つとして、関数リテラルも使える。
 ```myFunc(x, y, fn(x, y) { return x > y; });```
+
+
+### 関数呼び出し
+add(1, 2)
+add(1, 1 + 2 + 3)
+addは関数なので、以下も有効となる
+fn(x, y){ x * y;}(1, 2)
+
+関数は値を返すので、これも有効
+callsFunction(2, 3, fn(x, y){ x * y;})
+
+構造は
+<expression>(<comma separated expression>)
