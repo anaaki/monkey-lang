@@ -330,3 +330,44 @@ callsFunction(2, 3, fn(x, y){ x * y;})
 
 構造は
 <expression>(<comma separated expression>)
+
+# 評価
+インタプリタとコンパイラ
+コンパイラは実行可能な成果物を残すという考え方もあるが、実用的なプログラミング言語ではそうでもない。
+ASTの扱い方で典型的なのは、そのまま解釈すること「tree walking 型。実装によって再起や繰り返しを実行するのにより適した中間表現(IR; intermidiate representation)に変換したりする。
+前もって AST を辿りバイトコードに変換するインタプリタもある。
+バイトコードは ネイティブの機械語ではないし、アセンブリ言語でもない。
+OSやインタプリタが動作している CPU上では実行できない。そうではなく、インタプリタの一部である仮想マシンで解釈される。
+ソースコードを構文解析し、ASTを構築しバイトコードに変換する。バイトコードで規定された命令を実行の直前に仮想マシンがジャストインタイムでネイティブの機械語に変換するJIT(Just In Time)インタプリタ/コンパイラというものもある。
+
+Monkeyはtree walkingインタプリタとする。
+tree-walking評価器とホスト言語GoでMonkeyを評価(eval)する方法、2つが必要になる。
+
+```js
+
+function eval(astNode) {
+	if (astNode is integerliteral) {
+		return astNode.integerValue
+	} else if (astNode is booleanLiteral) {
+		return astNode.booleanValue
+	} else if (astNode is infixExpression) {
+		leftEvaluated = eval(astNode.Left)
+		rightEvaluated = eval(astNode.Right)
+		if astNode.Operator == "+" {
+			return leftEvaluated + rightEvaluated
+		} else if ast.Operator == "-" {
+			return leftEvaluated - rightEvaluated
+		}
+	}
+}
+```
+
+## evalが何を返すか？
+
+ASTが表現する値や、ASTを評価した際メモリ上に生成する値を表現できるシステムが必要となる。
+例えば、```let a = 5;```のあと、```a + a```を実行するとき、aにある値にアクセスする必要がある。
+
+一般にインタプリタ言語において、値の内部表現を構築するには、様々な選択肢がある。
+ * ホスト言語のネイティブ型(整数、真偽値など)をそのまま使う
+ * 値やオブジェクトはポインタとして表現する。
+ * ネイティブ型とポインタを混在して用いる
