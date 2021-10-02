@@ -50,6 +50,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
+	p.registerInfix(token.LPAREN, p.parseCallExpression)
 
 	// 2つトークンを読んで、curToken, peekToken両方セットする。
 	p.nextToken()
@@ -224,6 +225,7 @@ var precedences = map[token.TokenType]int{
 	token.MINUS:    SUM,
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
+	token.LPAREN:   CALL,
 }
 
 func (p *Parser) peekPrecedence() int {
@@ -343,4 +345,34 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 		return nil
 	}
 	return identifires
+}
+
+func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
+	exp := &ast.CallExpression{Token: p.curToken, Function: function}
+	exp.Arguments = p.parseCallArguments()
+	return exp
+}
+
+func (p *Parser) parseCallArguments() []ast.Expression {
+	args := []ast.Expression{}
+	if p.peekTokenIs(token.RPAREN) {
+		// add()の(にいる状態。次のトークンが)ということは、引数なしということ。
+		p.nextToken()
+		return args
+	}
+
+	p.nextToken()
+	args = append(args, p.parseExpression(LOWEST)) //最初の引数
+
+	// 次にCOMMAがある限り読み進める。
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken() // (1,2)のCOMMAへ
+		p.nextToken() // (1,2)の2へ
+		args = append(args, p.parseExpression(LOWEST))
+	}
+	if !p.expectPeek(token.RPAREN) {
+		// この時点でadd(1, 2)の2。かつ次がCOMMAでないことはわかっている。次が)でないのは構文エラー
+		return nil
+	}
+	return args
 }
