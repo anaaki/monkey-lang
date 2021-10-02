@@ -108,6 +108,8 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{Token: p.curToken}
 	p.nextToken()
 
+	stmt.Value = p.parseExpression(LOWEST)
+
 	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
@@ -130,6 +132,9 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 	// letは先頭に出てくる。testLetStatementをGreenにするため、letが確認できたらセミコロンまで読み飛ばしてしまっている。
 	// TODO: あとでなおす
+	//　なおした
+	p.nextToken()
+	stmt.Value = p.parseExpression(LOWEST)
 	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
