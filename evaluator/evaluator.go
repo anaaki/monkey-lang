@@ -6,6 +6,8 @@ import (
 )
 
 var (
+	//特定の値しか取らないオブジェクトはインスタンスを1つつくって参照で使う。
+	NULL  = &object.Null{}
 	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
 )
