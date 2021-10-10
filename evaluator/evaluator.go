@@ -65,6 +65,11 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 	switch {
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right)
+	// 整数でない場合、単に真偽値を比較することとなる。MOnkeyでは真偽値は常に同じオブジェクトを使っているから(varの定数にて定義している)、ポインタの比較になる。
+	case operator == "==":
+		return nativeBooltoBooleanObject(left == right)
+	case operator == "!=":
+		return nativeBooltoBooleanObject(left != right)
 	default:
 		return NULL
 	}
