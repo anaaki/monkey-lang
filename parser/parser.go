@@ -216,7 +216,7 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	//この関数が呼び出されるのは!や-など。前置演算子後にはセットとなるオペランドがあるので、Tokenを前に進める。
 	p.nextToken()
 	expression.Right = p.parseExpression(PREIX)
-	fmt.Println(expression.Right.String())
+	// fmt.Println(expression.Right.String())
 	return expression
 }
 
