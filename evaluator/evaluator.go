@@ -30,6 +30,9 @@ func Eval(node ast.Node) object.Object {
 		return evalStatements(node.Statements)
 	case *ast.IfExpression:
 		return evalIfExpression(node)
+	case *ast.ReturnStatement:
+		val := Eval(node.Value)
+		return &object.ReturnValue{Value: val}
 	// 式
 	case *ast.Boolean:
 		return nativeBooltoBooleanObject(node.Value)
@@ -65,6 +68,10 @@ func evalStatements(stmt []ast.Statement) object.Object {
 	var result object.Object
 	for _, statement := range stmt {
 		result = Eval(statement)
+		// statementがobject.ReturnValueであれば、それが帰ってくるはず。
+		if returnValue, ok := result.(*object.ReturnValue); ok {
+			return returnValue.Value
+		}
 	}
 	return result
 }

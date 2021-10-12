@@ -392,3 +392,30 @@ if(x){
 ```
 
 if 条件分岐では if(falsey)はNULLを返すこととする
+
+## 3.7 return文
+
+returnが出てきたら、すぐに結果を返す。次の行に何かあっても評価しない。
+returnに対応するにはreturnが出るたびに評価器を通して戻り値を渡していく。
+
+「オブジェクトの内部にラップする」とは以下のようになる。ReturnValueはObject型のValueを持つ。かつObject interfaceも充たすよう、Type,Inspectを実装。
+```go
+type Object interface {
+	Type() ObjectType
+	Inspect() string
+}
+type ReturnValue struct {
+	Value Object
+}
+func (rv *ReturnValue) Inspect() string  { return rv.Value.Inspect() }
+func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
+```
+
+こうすれば、objectにいろいろな型がある中で、ReturnValueを検知することができる
+```go
+	result = Eval(statement)
+	// statementがobject.ReturnValueであれば、returnで返すべき値をすぐに返す
+	if returnValue, ok := result.(*object.ReturnValue); ok {
+		return returnValue.Value
+	}
+```
