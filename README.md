@@ -419,3 +419,7 @@ func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
 		return returnValue.Value
 	}
 ```
+
+ただし、if(10>1){if(10>1) {return 1;} return 10;}の場合、外側のifでEval(statement)の結果にobject.ReturnValueがあるからといって、
+即座にそれを返すと期待通りの動きにならない。この場合1を返したい。
+
