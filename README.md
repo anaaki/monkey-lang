@@ -423,5 +423,6 @@ func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
 ただし、if(10>1){if(10>1) {return 1;} return 10;}の場合、外側のifでEval(statement)の結果にobject.ReturnValueがあるからといって、
 即座にそれを返すと期待通りの動きにならない。この場合1を返したい。
 
-returnValueを返すタイミングを変更する。blockStatementを別で儲ける。ここではreturnValueがあるかどうかだけ確認する。あればresultだけ返す
-外側のProgramの方で実際の値は返すようにした。そうすれば入れ子の中で返す挙動になる。
+returnValueを返すタイミングを変更する。blockStatementを別で儲ける。ここではreturnValueがあるかどうかだけ確認してあればresultだけ返す。外側のProgramの方に戻す。
+実際の値は外側のProgramの方で返すようにした。そうすれば入れ子の中で返す挙動になる。
+returnを見つけたら、すぐに外側に戻す。見つけたことだけを外側から検知できるようにする。

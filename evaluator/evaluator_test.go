@@ -158,7 +158,7 @@ func TestReturnStatements(t *testing.T) {
 		{"9; return 2 * 5; 9;", 10},
 		{
 			`
-if (10 > 1) { if (10 > 1) {
+if (10 > 1) { if (10 > 2) {
 return 10; }
 return 1; }
 `,
