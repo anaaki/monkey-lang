@@ -426,3 +426,10 @@ func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
 returnValueを返すタイミングを変更する。blockStatementを別で儲ける。ここではreturnValueがあるかどうかだけ確認してあればresultだけ返す。外側のProgramの方に戻す。
 実際の値は外側のProgramの方で返すようにした。そうすれば入れ子の中で返す挙動になる。
 returnを見つけたら、すぐに外側に戻す。見つけたことだけを外側から検知できるようにする。
+
+
+3.8 エラー処理
+
+エラーとは間違った演算子、対応していない＋、その他実行中に発生する可能性のあるユーザーエラーのこと。  
+実装方法はreturn文と似ている、見つけたら即実行中断につなげるところが似ている。
+
