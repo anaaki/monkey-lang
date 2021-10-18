@@ -46,7 +46,12 @@ func Eval(node ast.Node) object.Object {
 			return val
 		}
 		return &object.ReturnValue{Value: val}
-	// 式
+	case *ast.LetStatement:
+		val := Eval(node.Value)
+		if isEerror(val) {
+			return val
+		}
+		// 式
 	case *ast.Boolean:
 		return nativeBooltoBooleanObject(node.Value)
 	case *ast.IntegerLiteral:
