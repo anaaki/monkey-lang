@@ -442,3 +442,34 @@ let x = 5;
 x;
 ```
 は5を返して欲しい。実際の値は内部にEnvironment（mapをwrapしたもの）を作って保存しておく。
+
+### 3.10 関数呼び出し
+
+通常の呼び出しと共に、以下のような呼び出しも可能にする。
+```
+
+>> let callTwoTimes = fn(x, func) { func(func(x)) }; 
+>> callTwoTimes(3, addThree);
+9
+>> callTwoTimes(3, fn(x) { x + 1 });
+5
+
+>> let newAdder = fn(x) { fn(n) { x + n } }; 
+>> let addTwo = newAdder(2);
+>> addTwo(2);
+4
+```
+
+今後必要になること
+
+ * オブジェクトシステムに関数の内部表現を定義する→astに新たに定義
+ * Evalに関数呼び出しの対応
+
+```go
+type Function struct {
+	Parameters []*ast.Identifier
+	Body       *ast.BlockStatement
+	Env        *Environment
+}
+```
+Envへのポインタがることで、その関数独自の環境を持て、クロージャーも可能になる。
