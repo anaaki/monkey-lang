@@ -51,15 +51,24 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		if isEerror(val) {
 			return val
 		}
+		env.Set(node.Name.Value, val)
 		// 式
 	case *ast.Boolean:
 		return nativeBooltoBooleanObject(node.Value)
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
+	case *ast.Identifier:
+		return evalIdentifier(node, env)
 	}
 	return nil
 }
-
+func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object {
+	val, ok := env.Get(node.Value)
+	if !ok {
+		return newError("identifier not found: " + node.Value)
+	}
+	return val
+}
 func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Object {
 	condition := Eval(ie.Condition, env)
 	if isEerror(condition) {
