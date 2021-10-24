@@ -78,3 +78,9 @@ func (f *Function) Inspect() string {
 
 	return out.String()
 }
+
+func NewEnclosedEnvironment(outer *Environment) *Environment {
+	env := NewEnvironment()
+	env.outer = outer
+	return env
+}
