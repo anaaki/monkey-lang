@@ -261,7 +261,7 @@ func TestFunctionApplication(t *testing.T) {
 	}{
 		{"let identity = fn(x) { x; }; identity(5);", 5},        // 暗黙の戻り値
 		{"let identity = fn(x) { return x; }; identity(5);", 5}, // returnの戻り値
-		{"let double = fn(x) { x * 2; }; duble(5);", 10},
+		{"let double = fn(x) { x * 2; }; double(5);", 10},
 		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
 		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
 		{"fn(x) { x; }(5)", 5},
