@@ -517,4 +517,10 @@ xはトップレベルの環境では値に束縛されていない。にもか�
 type BuiltinFunction func(args ...Object) Object
 ```
 ピリオド3つは可変長引数の意味。この場合、Object型を複数受け取れるという意味。
+
+```go
+	case *object.Builtin:
+		return fn.Fn(args...)
+```
+可変で引き渡すときは、後ろにピリオド3つ
 例えばlenの場合、環境にあれば識別子、なくても、builtinsにあればビルトイン関数として扱うことになる。
