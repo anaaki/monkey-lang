@@ -543,3 +543,24 @@ type BuiltinFunction func(args ...Object) Object
 ```
 lenという識別子から、builinsのlenを引き当てる。実際に数えるところをGoのlenでやっているだけで,エラー処理はMonkeyとして実施する。  
 戻り値は文字数なので、&object.Integerになる。
+
+## 4.4 配列
+配列要素の型は問わないことにする。
+len(array)で配列の長さを返せるようにする。
+push, rest, firstといった組み込み関数もよういしてみる。
+```
+>> let myArray = ["one", "two", "three"];
+>> len(myArray)
+3
+>> first(myArray)
+one
+>> rest(myArray)
+[two, three]
+>> last(myArray)
+three
+>> push(myArray, "four")
+[one, two, three, four]
+
+>> myArray[0]
+one
+```
