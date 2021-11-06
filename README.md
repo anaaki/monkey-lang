@@ -524,3 +524,22 @@ type BuiltinFunction func(args ...Object) Object
 ```
 可変で引き渡すときは、後ろにピリオド3つ
 例えばlenの場合、環境にあれば識別子、なくても、builtinsにあればビルトイン関数として扱うことになる。
+
+```go
+"len": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return newError("wrong number of arguments. got=%d, want=1", len(args))
+			}
+			switch arg := args[0].(type) {
+			case *object.String:
+				return &object.Integer{Value: int64(len(arg.Value))}
+			default:
+				return newError("argument to `len` not supported, got %s", args[0].Type())
+
+			}
+		},
+	},
+```
+lenという識別子から、builinsのlenを引き当てる。実際に数えるところをGoのlenでやっているだけで,エラー処理はMonkeyとして実施する。  
+戻り値は文字数なので、&object.Integerになる。
