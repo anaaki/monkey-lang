@@ -36,6 +36,9 @@ const (
 	RPAREN = ")"
 	RBRACE = "}"
 
+	LBRACKET = "["
+	RBRACKET = "]"
+
 	// キーワード
 	FUNCTION = "FN"
 	LET      = "LET"
