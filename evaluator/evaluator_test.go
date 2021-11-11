@@ -1,9 +1,11 @@
 package evaluator
 
 import (
+	"fmt"
 	"monkey/lexer"
 	"monkey/object"
 	"monkey/parser"
+	"strings"
 	"testing"
 )
 
@@ -322,6 +324,9 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len(1)`, "argument to `len` not supported, got INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
 		{`len([1, 2])`, 2},
+		{`first([100, 10, 0])`, 100},
+		{`last([100, 10, 0])`, 0},
+		{`rest([100, 10, 0])`, []int{10, 0}},
 	}
 
 	for _, tt := range tests {
@@ -329,6 +334,16 @@ func TestBuiltinFunctions(t *testing.T) {
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case []int:
+			obj, ok := evaluated.(*object.Array)
+			if !ok {
+				t.Errorf("object is not Array. got=%T(%+v)", evaluated, evaluated)
+			}
+			expectedInspect := strings.Replace(fmt.Sprint(expected), " ", ", ", -1)
+			evaluatedInspact := obj.Inspect()
+			if expectedInspect != evaluatedInspact {
+				t.Errorf("rest has wrong return. got=%q want=%q", expectedInspect, evaluatedInspact)
+			}
 		case string:
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
