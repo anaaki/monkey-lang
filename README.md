@@ -571,3 +571,9 @@ arr[0];
 ```
 ができるようになる。<expression>[<expression>]の構造になる。
 呼び出し式でやったのと同様に、myArray[0]における「[」を 中置演算子として扱い、myArrayを左のオペランド、0を右のオペランドとして扱う。
+
+4.5.2
+ハッシュリテラルはカンマで区切られたペアのリスト。
+```
+{<expression> : <expression>, <expression> : <expression>, ... }
+```
